@@ -71,7 +71,7 @@ public class Person
 		}
 
 	}
-
+	private final ArrayList<Person> friends = new ArrayList<Person>();
 	private final PeopleDB db;
 	private final String firstName, lastName, username;
 	private final Gender gender;
@@ -86,6 +86,12 @@ public class Person
 		this.gender = builder.getGender();
 		this.relationship = builder.getRelationship();
 		db = PeopleDB.getInstance();
+	}
+
+	public void addFriend(Person newFriend)
+	{
+		if (!friends.contains(newFriend))
+			friends.add(newFriend);
 	}
 
 	public ArrayList<String> asArrayList()
