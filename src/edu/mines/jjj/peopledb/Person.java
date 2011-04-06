@@ -71,7 +71,7 @@ public class Person
 		}
 
 	}
-	private final ArrayList<Person> friends = new ArrayList<Person>();
+	private final ArrayList<Person> friends;
 	private final PeopleDB db;
 	private final String firstName, lastName, username;
 	private final Gender gender;
@@ -85,6 +85,7 @@ public class Person
 		this.username = builder.getUsername();
 		this.gender = builder.getGender();
 		this.relationship = builder.getRelationship();
+		friends = new ArrayList<Person>();
 		db = PeopleDB.getInstance();
 	}
 

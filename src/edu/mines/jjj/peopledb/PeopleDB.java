@@ -103,18 +103,27 @@ public final class PeopleDB
 	}
 	private void runCreate()
 	{
-		// try
-		// {
-		// createStatement.executeUpdate("create table if not exists people(" +
-		// "id integer primary key," +
-		// PEOPLE_FIRST_NAME + " text);");
-		// }
-		// catch (SQLException e)
-		// {
-		// e.printStackTrace();
-		// }
-	}
+		String state = "create table if not exists people(id integer primary key, ";
 
+		for (String s : PEOPLE_COLUMNS)
+		{
+			state += s + " text, ";
+		}
+		state = state.substring(0, state.length() - 2);
+
+		state += ");";
+
+		System.out.println(state);
+		try
+		{
+			createStatement.execute(state);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
 	public static PeopleDB getInstance()
 	{
 		if (singleton == null)
