@@ -3,8 +3,8 @@ package edu.mines.jjj.peopledb;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -27,7 +27,6 @@ public final class PeopleDB
 	private static ArrayList<String> PEOPLE_COLUMNS;
 
 	private Connection connection;
-	private Statement createStatement;
 
 	private PeopleDB()
 	{
@@ -45,7 +44,6 @@ public final class PeopleDB
 		{
 
 			connection = DriverManager.getConnection("jdbc:sqlite:people.db");
-			createStatement = connection.createStatement();
 		}
 		catch (SQLException e)
 		{
@@ -64,13 +62,14 @@ public final class PeopleDB
 	{
 		try
 		{
-			createStatement.execute("delete from poeple;");
+			connection.createStatement().execute("delete from people;");
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 	}
+
 	public boolean insertPerson(Person p)
 	{
 		try
@@ -112,14 +111,17 @@ public final class PeopleDB
 		}
 		return true;
 	}
-
 	private void runCreate()
 	{
 		String state = "create table if not exists people(id integer primary key, ";
 
 		for (String s : PEOPLE_COLUMNS)
 		{
-			state += s + " text, ";
+			String toAdd = s + " text, ";
+			if (s == "username")
+				toAdd = s + " text unique, ";
+			state += toAdd;
+
 		}
 		state = state.substring(0, state.length() - 2);
 
@@ -128,7 +130,7 @@ public final class PeopleDB
 		System.out.println(state);
 		try
 		{
-			createStatement.execute(state);
+			connection.createStatement().execute(state);
 		}
 		catch (SQLException e)
 		{
@@ -144,6 +146,28 @@ public final class PeopleDB
 			singleton = new PeopleDB();
 		}
 		return singleton;
+	}
+
+	public static ArrayList<String> getPersonInfo(Person p)
+	{
+		ArrayList<String> info = new ArrayList<String>();
+		ResultSet results;
+
+		try
+		{
+			results = singleton.connection.createStatement()
+				.executeQuery("select * from people where userName = '"
+					+ p.getUsername() + "'");
+
+			for (String s : PEOPLE_COLUMNS)
+				info.add(results.getString(s));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+		return info;
 	}
 
 }
