@@ -114,6 +114,16 @@ public final class PeopleDB
 		// e.printStackTrace();
 		// }
 	}
+	
+	//Assume that friends table is named friends
+	private void addFriendship(Person friend1, Person friend2)
+	{
+		int friend1Id, friend2Id;
+		
+		
+		String stmtBegin = "insert into friends(";
+		
+	}
 
 	public static PeopleDB getInstance()
 	{
