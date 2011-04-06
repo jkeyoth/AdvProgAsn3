@@ -139,6 +139,11 @@ public final class PeopleDB
 
 	}
 
+	public static int getIdFromUsername(String uname)
+	{
+
+	}
+
 	public static PeopleDB getInstance()
 	{
 		if (singleton == null)
