@@ -1,5 +1,9 @@
 package edu.mines.jjj.peopledb;
 
+import java.util.ArrayList;
+
+import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +26,14 @@ public class PersonTest extends TestCase
 	@Test
 	public void testAsArrayList()
 	{
-		fail("Not yet implemented");
+		setup();
+		ArrayList<String> al = person.asArrayList();
+		assertEquals("First name doesn't match", al.get(0), "testFirst");
+		assertEquals("Last name doesn't match", al.get(1), "testLast");
+		assertEquals("User name doesn't match", al.get(2), "testUser");
+		assertEquals("Gender doesn't match", al.get(3), Gender.Male.toString());
+		assertEquals("Relationship doesn't match", al.get(4), Relationship.Single.toString());
+
 	}
 
 	@Test
@@ -39,7 +50,19 @@ public class PersonTest extends TestCase
 	@Test
 	public void testUpdate()
 	{
-		fail("Not yet implemented");
+		setup();
+		PeopleDB.getInstance().deleteAllRows();
+
+		person.update();
+
+		ArrayList<String> al = PeopleDB.getPersonInfo(person);
+
+		assertEquals("First name doesn't match", al.get(0), "testFirst");
+		assertEquals("Last name doesn't match", al.get(1), "testLast");
+		assertEquals("User name doesn't match", al.get(2), "testUser");
+		assertEquals("Gender doesn't match", al.get(3), Gender.Male.toString());
+		assertEquals("Relationship doesn't match", al.get(4), Relationship.Single.toString());
+
 	}
 
 }
