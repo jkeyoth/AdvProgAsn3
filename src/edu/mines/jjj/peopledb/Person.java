@@ -4,20 +4,88 @@ import java.util.ArrayList;
 
 public class Person
 {
-	private final PeopleDB db;
+	public class PersonBuilder
+	{
+		private String firstName, lastName, username;
+		private Gender gender;
+		private Relationship relationship;
 
+		public PersonBuilder()
+		{
+		}
+
+		public Person build()
+		{
+			return new Person(this);
+		}
+		public PersonBuilder firstName(String firstName)
+		{
+			this.firstName = firstName;
+			return this;
+		}
+		public PersonBuilder gender(Gender gender)
+		{
+			this.gender = gender;
+			return this;
+		}
+		public String getFirstName()
+		{
+			return firstName;
+		}
+		public Gender getGender()
+		{
+			return gender;
+		}
+
+		public String getLastName()
+		{
+			return lastName;
+		}
+
+		public Relationship getRelationship()
+		{
+			return relationship;
+		}
+
+		public String getUsername()
+		{
+			return username;
+		}
+
+		public PersonBuilder lastName(String lastName)
+		{
+			this.lastName = lastName;
+			return this;
+		}
+
+		public PersonBuilder relationship(Relationship relationship)
+		{
+			this.relationship = relationship;
+			return this;
+		}
+
+		public PersonBuilder username(String username)
+		{
+			this.username = username;
+			return this;
+		}
+
+	}
+
+	private final PeopleDB db;
 	private final String firstName, lastName, username;
 	private final Gender gender;
+
 	private final Relationship relationship;
 
 	// TODO: make a builder pattern thinger
-	public Person(String fname, String lname, String uname, Gender gender, Relationship relationship)
+	public Person(PersonBuilder builder)
 	{
-		this.firstName = fname;
-		this.lastName = lname;
-		this.username = uname;
-		this.gender = gender;
-		this.relationship = relationship;
+		this.firstName = builder.getFirstName();
+		this.lastName = builder.getLastName();
+		this.username = builder.getUsername();
+		this.gender = builder.getGender();
+		this.relationship = builder.getRelationship();
 		db = PeopleDB.getInstance();
 	}
 
@@ -63,10 +131,4 @@ public class Person
 		db.insertPerson(this);
 	}
 
-	public static void main(String[] args)
-	{
-		Person p = new Person("testFirst", "testLast", "testUser", Gender.Male,
-			Relationship.Engaged);
-		p.update();
-	}
 }
