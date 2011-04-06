@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Person
 {
-	public class PersonBuilder
+	
+	public static class PersonBuilder
 	{
 		private String firstName, lastName, username;
 		private Gender gender;
 		private Relationship relationship;
+		
 
 		public PersonBuilder()
 		{
@@ -71,7 +73,7 @@ public class Person
 		}
 
 	}
-
+	private ArrayList<Person> friends = new ArrayList<Person>();
 	private final PeopleDB db;
 	private final String firstName, lastName, username;
 	private final Gender gender;
@@ -99,6 +101,11 @@ public class Person
 		al.add(relationship.toString());
 
 		return al;
+	}
+	
+	public void addFriend(Person newFriend){
+		if(!friends.contains(newFriend))
+			friends.add(newFriend);
 	}
 
 	public String getFirstName()
