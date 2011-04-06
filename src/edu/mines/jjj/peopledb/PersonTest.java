@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import junit.framework.TestCase;
 import edu.mines.jjj.peopledb.Person.PersonBuilder;
 
 public class PersonTest extends TestCase

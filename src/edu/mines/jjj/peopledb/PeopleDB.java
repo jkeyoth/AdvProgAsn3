@@ -58,6 +58,15 @@ public final class PeopleDB
 		PEOPLE_COLUMNS.add("relationship");
 		runCreate();
 	}
+	// Assume that friends table is named friends
+	private void addFriendship(Person friend1, Person friend2)
+	{
+		int friend1Id, friend2Id;
+
+		String stmtBegin = "insert into friends(";
+
+	}
+
 	public void deleteAllRows()
 	{
 		try
@@ -69,7 +78,6 @@ public final class PeopleDB
 			e.printStackTrace();
 		}
 	}
-
 	public boolean insertPerson(Person p)
 	{
 		try
@@ -111,6 +119,7 @@ public final class PeopleDB
 		}
 		return true;
 	}
+
 	private void runCreate()
 	{
 		String state = "create table if not exists people(id integer primary key, ";
