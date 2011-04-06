@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Person
 {
-	public class PersonBuilder
+	public static class PersonBuilder
 	{
 		private String firstName, lastName, username;
 		private Gender gender;
@@ -78,7 +78,6 @@ public class Person
 
 	private final Relationship relationship;
 
-	// TODO: make a builder pattern thinger
 	public Person(PersonBuilder builder)
 	{
 		this.firstName = builder.getFirstName();
