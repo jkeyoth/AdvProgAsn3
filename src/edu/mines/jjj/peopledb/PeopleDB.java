@@ -60,6 +60,17 @@ public final class PeopleDB
 		PEOPLE_COLUMNS.add("relationship");
 		runCreate();
 	}
+	public void deleteAllRows()
+	{
+		try
+		{
+			createStatement.execute("delete from poeple;");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	public boolean insertPerson(Person p)
 	{
 		try
@@ -101,6 +112,7 @@ public final class PeopleDB
 		}
 		return true;
 	}
+
 	private void runCreate()
 	{
 		String state = "create table if not exists people(id integer primary key, ";
@@ -124,6 +136,7 @@ public final class PeopleDB
 		}
 
 	}
+
 	public static PeopleDB getInstance()
 	{
 		if (singleton == null)
