@@ -9,75 +9,90 @@ public class Person
 		private String firstName, lastName, username;
 		private Gender gender;
 		private Relationship relationship;
-
+		
 		public PersonBuilder()
 		{
 		}
-
+		
+		public PersonBuilder(ArrayList<String> info)
+		{
+			this.firstName = info.get(0);
+			this.lastName = info.get(1);
+			this.username = info.get(2);
+			this.gender = Gender.fromString(info.get(3));
+			this.relationship = Relationship.fromString(info.get(4));
+			
+		}
+		
 		public Person build()
 		{
 			return new Person(this);
 		}
+		
 		public PersonBuilder firstName(String firstName)
 		{
 			this.firstName = firstName;
 			return this;
 		}
+		
 		public PersonBuilder gender(Gender gender)
 		{
 			this.gender = gender;
 			return this;
 		}
+		
 		public String getFirstName()
 		{
 			return firstName;
 		}
+		
 		public Gender getGender()
 		{
 			return gender;
 		}
-
+		
 		public String getLastName()
 		{
 			return lastName;
 		}
-
+		
 		public Relationship getRelationship()
 		{
 			return relationship;
 		}
-
+		
 		public String getUsername()
 		{
 			return username;
 		}
-
+		
 		public PersonBuilder lastName(String lastName)
 		{
 			this.lastName = lastName;
 			return this;
 		}
-
+		
 		public PersonBuilder relationship(Relationship relationship)
 		{
 			this.relationship = relationship;
 			return this;
 		}
-
+		
 		public PersonBuilder username(String username)
 		{
 			this.username = username;
 			return this;
 		}
-
+		
 	}
+	
 	private final ArrayList<Person> friends;
 	private final PeopleDB db;
 	private final String firstName, lastName, username;
 	private final Gender gender;
-
+	
 	private final Relationship relationship;
-
+	
 	public Person(PersonBuilder builder)
 	{
 		this.firstName = builder.getFirstName();
@@ -88,13 +103,13 @@ public class Person
 		friends = new ArrayList<Person>();
 		db = PeopleDB.getInstance();
 	}
-
+	
 	public void addFriend(Person newFriend)
 	{
 		if (!friends.contains(newFriend))
 			friends.add(newFriend);
 	}
-
+	
 	public ArrayList<String> asArrayList()
 	{
 		ArrayList<String> al = new ArrayList<String>();
@@ -103,38 +118,38 @@ public class Person
 		al.add(username);
 		al.add(gender.toString());
 		al.add(relationship.toString());
-
+		
 		return al;
 	}
-
+	
 	public String getFirstName()
 	{
 		return firstName;
 	}
-
+	
 	public Gender getGender()
 	{
 		return gender;
 	}
-
+	
 	public String getLastName()
 	{
 		return lastName;
 	}
-
+	
 	public Relationship getRelationship()
 	{
 		return relationship;
 	}
-
+	
 	public String getUsername()
 	{
 		return username;
 	}
-
+	
 	public void update()
 	{
 		db.insertPerson(this);
 	}
-
+	
 }
