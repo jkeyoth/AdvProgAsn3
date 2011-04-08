@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import edu.mines.jjj.peopledb.Person.PersonBuilder;
+
 /**
  * This class handles all database transactions.
  * 
@@ -19,12 +21,22 @@ public final class PeopleDB
 	
 	private static PeopleDB singleton = null;
 	
-	/**
-	 * database column names
-	 */
-	public static String TABLE_PEOPLE = "people";
+	// column names: TABLE_NAME_TYPE
+	public static final String ID_INT = "id"; // all tables will have an id column
 	
-	private static ArrayList<String> PEOPLE_COLUMNS;
+	public static final String PEOPLE_FIRSTNAME_TEXT = "fname";
+	public static final String PEOPLE_LASTNAME_TEXT = "lname";
+	public static final String PEOPLE_USERNAME_TEXT = "uname";
+	public static final String PEOPLE_GENDER_TEXT = "gender";
+	public static final String PEOPLE_RELATIONSHIP_TEXT = "relationship";
+	public static final String PEOPLE_AGE_INT = "age";
+	
+	public static final String FRIENDSHIP_PERSON1_INT = "person1";
+	public static final String FRIENDSHIP_PERSON2_INT = "person2";
+	
+	// table names
+	public static final String TABLE_PEOPLE = "people";
+	public static final String TABLE_FRIENDSHIP = "friendship";
 	
 	private Connection connection;
 	
@@ -50,12 +62,6 @@ public final class PeopleDB
 			System.out.println(e);
 		}
 		
-		PEOPLE_COLUMNS = new ArrayList<String>();
-		PEOPLE_COLUMNS.add("firstName");
-		PEOPLE_COLUMNS.add("lastName");
-		PEOPLE_COLUMNS.add("userName");
-		PEOPLE_COLUMNS.add("gender");
-		PEOPLE_COLUMNS.add("relationship");
 		runCreate();
 	}
 	
@@ -84,34 +90,24 @@ public final class PeopleDB
 	{
 		try
 		{
-			String cols = "(";
-			String vals = "(";
-			for (String s : PEOPLE_COLUMNS)
-			{
-				cols += s + ", ";
-				vals += "?, ";
-			}
+			String cols =
+				PEOPLE_FIRSTNAME_TEXT + ", " + PEOPLE_LASTNAME_TEXT + ", "
+					+ PEOPLE_USERNAME_TEXT + ", " + PEOPLE_GENDER_TEXT + ", "
+					+ PEOPLE_RELATIONSHIP_TEXT + ", " + PEOPLE_AGE_INT;
 			
-			cols = cols.substring(0, cols.length() - 2);
-			vals = vals.substring(0, vals.length() - 2);
-			
-			cols += ") ";
-			vals += ");";
+			String vals = "?,?,?,?,?,?";
 			
 			PreparedStatement stmt =
-				connection.prepareStatement("INSERT INTO people" + cols + " values "
-					+ vals);
+				connection.prepareStatement("INSERT INTO " + TABLE_PEOPLE + "(" + cols
+					+ ") values(" + vals + ");");
 			
-			System.out.println(cols);
+			stmt.setString(1, p.getFirstName());
+			stmt.setString(2, p.getLastName());
+			stmt.setString(3, p.getUsername());
+			stmt.setString(4, p.getGender().toString());
+			stmt.setString(5, p.getRelationship().toString());
 			
-			ArrayList<String> infoList = p.asArrayList();
-			
-			for (int i = 1; i < infoList.size() + 1; i++)
-			{
-				stmt.setString(i, infoList.get(i - 1));
-				
-			}
-			
+			stmt.setInt(6, p.getAge());
 			stmt.executeUpdate();
 			stmt.close();
 			
@@ -125,21 +121,16 @@ public final class PeopleDB
 	
 	private void runCreate()
 	{
-		String state = "create table if not exists people(id integer primary key, ";
+		String state = "create table if not exists people(" +
+			ID_INT + " integer primary key, " +
+			PEOPLE_FIRSTNAME_TEXT + " text, " +
+			PEOPLE_LASTNAME_TEXT + " text, " +
+			PEOPLE_USERNAME_TEXT + " text unique, " +
+			PEOPLE_GENDER_TEXT + " text, " +
+			PEOPLE_RELATIONSHIP_TEXT + " text, " +
+			PEOPLE_AGE_INT + " integer" +
+			");";
 		
-		for (String s : PEOPLE_COLUMNS)
-		{
-			String toAdd = s + " text, ";
-			if (s == "username")
-				toAdd = s + " text unique, ";
-			state += toAdd;
-			
-		}
-		state = state.substring(0, state.length() - 2);
-		
-		state += ");";
-		
-		System.out.println(state);
 		try
 		{
 			connection.createStatement().execute(state);
@@ -151,7 +142,7 @@ public final class PeopleDB
 		
 	}
 	
-	public static int getIdFromUsername(String uname)
+	public int getIdFromUsername(String uname)
 	{
 		try
 		{
@@ -177,26 +168,60 @@ public final class PeopleDB
 		return singleton;
 	}
 	
-	public static ArrayList<String> getPersonInfo(Person p)
+	public ArrayList<Person> getAllPeople()
 	{
-		ArrayList<String> info = new ArrayList<String>();
+		ArrayList<Person> allPeeps = new ArrayList<Person>();
+		
 		ResultSet results;
 		
 		try
 		{
 			results =
 				singleton.connection.createStatement().executeQuery(
-					"select * from people where userName = '" + p.getUsername() + "'");
+					"select * from " + TABLE_PEOPLE + ";");
 			
-			for (String s : PEOPLE_COLUMNS)
-				info.add(results.getString(s));
+			while (results.next())
+			{
+				allPeeps
+					.add(buildPerson(results.getString(PEOPLE_USERNAME_TEXT)));
+			}
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		
-		return info;
+		return allPeeps;
+	}
+	
+	public Person buildPerson(String username)
+	{
+		ResultSet results;
+		
+		try
+		{
+			results =
+				singleton.connection.createStatement().executeQuery(
+					"select * from " + TABLE_PEOPLE + " where " + PEOPLE_USERNAME_TEXT
+						+ " = '" + username
+						+ "'");
+			
+			return new PersonBuilder()
+					.firstName(results.getString(PEOPLE_FIRSTNAME_TEXT))
+					.lastName(results.getString(PEOPLE_LASTNAME_TEXT))
+					.username(results.getString(PEOPLE_USERNAME_TEXT))
+					.gender(Gender.fromString(results.getString(PEOPLE_GENDER_TEXT)))
+					.relationship(
+						Relationship.fromString(results
+							.getString(PEOPLE_RELATIONSHIP_TEXT)))
+					.age(results.getInt(PEOPLE_AGE_INT))
+					.build();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }
