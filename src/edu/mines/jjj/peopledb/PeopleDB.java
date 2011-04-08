@@ -221,7 +221,7 @@ public final class PeopleDB
 		return allPeeps;
 	}
 	
-	// TODO: Add friendships
+	// TODO: Add friendships and groups
 	public Person buildPerson(String username)
 	{
 		ResultSet results;
