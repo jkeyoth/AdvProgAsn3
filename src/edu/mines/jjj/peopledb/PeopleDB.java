@@ -175,7 +175,8 @@ public final class PeopleDB
 		{
 			ResultSet results =
 				singleton.connection.createStatement().executeQuery(
-					"select id from people where userName = '" + uname + "'");
+					"select id from people where " + PEOPLE_USERNAME_TEXT + " = '"
+						+ uname + "'");
 			
 			return results.getInt("id");
 		}
