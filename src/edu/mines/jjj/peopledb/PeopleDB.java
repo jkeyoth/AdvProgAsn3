@@ -31,12 +31,21 @@ public final class PeopleDB
 	public static final String PEOPLE_RELATIONSHIP_TEXT = "relationship";
 	public static final String PEOPLE_AGE_INT = "age";
 	
-	public static final String FRIENDSHIP_PERSON1_INT = "person1";
-	public static final String FRIENDSHIP_PERSON2_INT = "person2";
+	public static final String FRIENDSHIP_PERSON1_FK_INT = "person1";
+	public static final String FRIENDSHIP_PERSON2_FK_INT = "person2";
+	
+	public static final String GROUP_NAME_TEXT = "name";
+	public static final String GROUP_DESCRIPTION_TEXT = "description";
+	
+	public static final String GROUP_MEMBER_MEMBER_ID_FK_INT = "member_id";
+	public static final String GROUP_MEMBER_GROUP_ID_FK_INT = "group_id";
+	// TODO: maybe add a date joined?
 	
 	// table names
 	public static final String TABLE_PEOPLE = "people";
 	public static final String TABLE_FRIENDSHIP = "friendship";
+	public static final String TABLE_GROUP = "groups";
+	public static final String TABLE_GROUP_MEMBER = "group_member";
 	
 	private Connection connection;
 	
@@ -121,7 +130,7 @@ public final class PeopleDB
 	
 	private void runCreate()
 	{
-		String state = "create table if not exists people(" +
+		String peopleState = "create table if not exists " + TABLE_PEOPLE + "(" +
 			ID_INT + " integer primary key, " +
 			PEOPLE_FIRSTNAME_TEXT + " text, " +
 			PEOPLE_LASTNAME_TEXT + " text, " +
@@ -131,9 +140,27 @@ public final class PeopleDB
 			PEOPLE_AGE_INT + " integer" +
 			");";
 		
+		String groupState = "create table if not exists " + TABLE_GROUP + "(" +
+			ID_INT + " integer primary key, " +
+			GROUP_NAME_TEXT + " text, " +
+			GROUP_DESCRIPTION_TEXT + " text);";
+		
+		String groupMemberState =
+			"create table if not exists " + TABLE_GROUP_MEMBER + "(" +
+				ID_INT + " integer primary key, " +
+				GROUP_MEMBER_MEMBER_ID_FK_INT + " integer, " +
+				GROUP_MEMBER_GROUP_ID_FK_INT + " integer, " +
+				"FOREIGN KEY(" + GROUP_MEMBER_MEMBER_ID_FK_INT + ") REFERENCES "
+				+ TABLE_PEOPLE + "(" + ID_INT + ")" +
+				"FOREIGN KEY(" + GROUP_MEMBER_GROUP_ID_FK_INT + ") REFERENCES "
+				+ TABLE_GROUP + "(" + ID_INT + ")" +
+					");";
+		
 		try
 		{
-			connection.createStatement().execute(state);
+			connection.createStatement().execute(peopleState);
+			connection.createStatement().execute(groupState);
+			connection.createStatement().execute(groupMemberState);
 		}
 		catch (SQLException e)
 		{
@@ -194,6 +221,7 @@ public final class PeopleDB
 		return allPeeps;
 	}
 	
+	// TODO: Add friendships
 	public Person buildPerson(String username)
 	{
 		ResultSet results;
