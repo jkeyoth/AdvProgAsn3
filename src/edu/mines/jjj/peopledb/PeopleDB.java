@@ -344,7 +344,7 @@ public final class PeopleDB
 			stmt.close();
 
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
