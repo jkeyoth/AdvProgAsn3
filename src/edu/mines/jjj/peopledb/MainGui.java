@@ -1,72 +1,343 @@
+
 package edu.mines.jjj.peopledb;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class MainGui extends JFrame
+public class MainGui extends JFrame implements ListSelectionListener, ActionListener
 {
-
+	
 	private JTabbedPane tabPan;
-
-	// student panel stuff
-	private JPanel studentPan;
-	// create student fields
-	private JPanel studentCreatePan;
+	
+	// person panel stuff
+	private JPanel personPan;
+	
+	// create person fields
+	private JPanel personCreatePan;
+	
 	private JTextField fnameField;
+	
 	private JTextField lnameField;
+	
 	private JTextField unameField;
+	
 	private JComboBox genderComb;
+	
 	private JComboBox relationComb;
+	
 	private JSpinner ageSpin;
-	// view student fields;
-	private JPanel studentViewPan;
-	private JLabel fnameOutLbl, lnameOutLbl, unameOutLbl, genderOutLbl, relationOutLbl, ageOutLbl,
-		groupsOutLbl, friendsOutLbl;
-
-	// group panel stuff
+	
+	private JButton perAddBtn;
+	
+	private JButton perClearBtn;
+	
+	// view person fields;
+	private JPanel personViewPan;
+	
+	private JList personList;
+	
+	private DefaultListModel personListModel;
+	
+	private JLabel perNameOut;
+	
+	private JLabel perInfoOut;
+	
+	
+	// add group stuff
+	private JPanel groupCreatePan;
+	
+	private JTextField grpNameField;
+	
+	private JTextArea grpDescArea;
+	
+	private JButton grpAddBtn;
+	
+	private JButton grpClearBtn;
+	
+	// view group stuff
+	private JPanel groupViewPan;
+	
 	private JPanel groupPan;
-
+	
+	private JList groupList;
+	
+	private DefaultListModel groupListModel;
+	
+	private JLabel grpNameOut;
+	
+	private JTextArea grpDescOut;
+	
+	// add friends stuff
+	
+	private JList friend1;
+	
+	private JList friend2;
+	
+	private JButton frdAddBtn;
+	
+	private JButton frdClearBtn;
+	
+	// view friends stuff
+	private JPanel friendsPan;
+	
+	private JTable friendInfoTbl;
+	
+	
 	public MainGui()
 	{
 		setupGui();
-
+		
 	}
+	
 	private void setupGui()
 	{
 		tabPan = new JTabbedPane();
+		
+		personPan = new JPanel(new BorderLayout(5, 5));
+		
 
-		studentPan = new JPanel();
-		groupPan = new JPanel();
-
-		tabPan.addTab("Student", studentPan);
-		tabPan.addTab("Groups", groupPan);
-
-		// create student stuff
-		studentCreatePan = new JPanel();
-		fnameField = new JTextField();
-		lnameField = new JTextField();
-		unameField = new JTextField();
+		// create person stuff
+		personCreatePan = new JPanel(new GridLayout(0, 2));
+		fnameField = new JTextField(10);
+		lnameField = new JTextField(10);
+		unameField = new JTextField(10);
 		genderComb = new JComboBox(Gender.values());
 		relationComb = new JComboBox(Relationship.values());
 		ageSpin = new JSpinner(new SpinnerNumberModel(18, 0, 120, 1));
+		perAddBtn = new JButton("Add");
+		perAddBtn.addActionListener(this);
+		perClearBtn = new JButton("Clear");
+		perClearBtn.addActionListener(this);
+		
 
-		// view student stuff
-		studentViewPan = new JPanel();
-		fnameOutLbl = new JLabel("");
-		lnameOutLbl = new JLabel("");
+		// add stuff
+		personCreatePan.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		personCreatePan.add(new JLabel("First Name:"));
+		personCreatePan.add(fnameField);
+		
+		personCreatePan.add(new JLabel("Last Name:"));
+		personCreatePan.add(lnameField);
+		
+		personCreatePan.add(new JLabel("User Name:"));
+		personCreatePan.add(unameField);
+		
+		personCreatePan.add(new JLabel("Gender:"));
+		personCreatePan.add(genderComb);
+		
+		personCreatePan.add(new JLabel("Relationship:"));
+		personCreatePan.add(relationComb);
+		
+		personCreatePan.add(new JLabel("Age:"));
+		personCreatePan.add(ageSpin);
+		
+		personCreatePan.add(perAddBtn);
+		personCreatePan.add(perClearBtn);
+		
 
+		// view person stuff
+		personViewPan = new JPanel(new GridBagLayout());
+		GridBagConstraints cons = new GridBagConstraints();
+		
+		personViewPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+		
+
+		personListModel = new DefaultListModel();
+		personListModel.addElement("testering");
+		
+		personList = new JList(personListModel);
+		personList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		personList.setSelectedIndex(0);
+		personList.addListSelectionListener(this);
+		// personList.setVisibleRowCount(15);
+		
+		final JScrollPane personListScroll = new JScrollPane(personList);
+		
+		perNameOut = new JLabel("No Student Selected");
+		perInfoOut = new JLabel("I'm here for positioning");
+		
+		cons.ipadx = 10;
+		cons.ipady = 10;
+		cons.weightx = 1;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridwidth = 1;
+		cons.gridheight = 2;
+		personViewPan.add(personListScroll, cons);
+		
+		cons.gridx = 1;
+		
+		personViewPan.add(new JSeparator(SwingConstants.VERTICAL), cons);
+		
+		cons.weightx = 5;
+		cons.gridx = 2;
+		cons.gridheight = 1;
+		personViewPan.add(perNameOut, cons);
+		
+		cons.gridy = 1;
+		personViewPan.add(perInfoOut, cons);
+		
+
+		// personTab
+		personPan.add(personCreatePan, BorderLayout.NORTH);
+		personPan.add(personViewPan, BorderLayout.CENTER);
+		
+
+		// group stuff
+		groupPan = new JPanel(new BorderLayout(5, 5));
+		
+		// add group stuff
+		groupCreatePan = new JPanel(new GridBagLayout());
+		
+		grpNameField = new JTextField(10);
+		grpDescArea = new JTextArea(3, 10);
+		final JScrollPane grpDescScroll = new JScrollPane(grpDescArea);
+		grpAddBtn = new JButton("Add");
+		grpClearBtn = new JButton("Clear");
+		
+		grpAddBtn.addActionListener(this);
+		grpClearBtn.addActionListener(this);
+		
+		cons = new GridBagConstraints();
+		
+		cons.weighty = 1;
+		cons.weightx = 1;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridwidth = 1;
+		cons.gridheight = 1;
+		cons.ipadx = 10;
+		cons.ipady = 10;
+		cons.fill = GridBagConstraints.BOTH;
+		
+		groupCreatePan.add(new JLabel("Group Name:"), cons);
+		
+		cons.gridx = 1;
+		groupCreatePan.add(grpNameField, cons);
+		
+		cons.gridx = 0;
+		cons.gridy = 1;
+		groupCreatePan.add(new JLabel("Group Description:"), cons);
+		
+		cons.gridx = 1;
+		cons.gridheight = 6;
+		groupCreatePan.add(grpDescScroll, cons);
+		
+		cons.gridx = 0;
+		cons.gridy = 7;
+		cons.insets = new Insets(0, 0, 50, 0);
+		groupCreatePan.add(grpAddBtn, cons);
+		
+		cons.gridx = 1;
+		
+		groupCreatePan.add(grpClearBtn, cons);
+		
+
+		groupViewPan = new JPanel(new GridBagLayout());
+		groupViewPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+		
+		groupListModel = new DefaultListModel();
+		groupListModel.addElement("testtesttest");
+		
+		groupList = new JList(groupListModel);
+		groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		groupList.setSelectedIndex(0);
+		groupList.addListSelectionListener(this);
+		
+		final JScrollPane groupListScroll = new JScrollPane(groupList);
+		
+		grpNameOut = new JLabel("No Group Selected");
+		grpDescOut = new JTextArea("For show only", 1, 10);
+		grpDescOut.setEditable(false);
+		grpDescOut.setBackground(groupViewPan.getBackground());// this is magic
+		grpDescOut.setFont(grpNameOut.getFont());// more magic
+		cons = new GridBagConstraints();
+		
+		cons.ipadx = 10;
+		cons.ipady = 10;
+		cons.weightx = 1;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridwidth = 1;
+		cons.gridheight = 2;
+		
+		groupViewPan.add(groupListScroll, cons);
+		
+		cons.gridx = 1;
+		
+		groupViewPan.add(new JSeparator(SwingConstants.VERTICAL), cons);
+		cons.weightx = 5;
+		cons.gridx = 2;
+		cons.gridheight = 1;
+		groupViewPan.add(grpNameOut, cons);
+		
+		cons.gridy = 1;
+		groupViewPan.add(grpDescOut, cons);
+		
+		groupPan.add(groupCreatePan, BorderLayout.NORTH);
+		groupPan.add(groupViewPan, BorderLayout.CENTER);
+		
+		tabPan.addTab("People", personPan);
+		tabPan.addTab("Groups", groupPan);
+		tabPan.addTab("Friends", friendsPan);
+		
+
+		this.setSize(800, 600);
+		this.add(tabPan);
+		
 	}
-	public static void main(String[] args)
+	
+	public static void main(final String[] args)
 	{
-		MainGui gui = new MainGui();
+		final MainGui gui = new MainGui();
 		gui.setVisible(true);
-
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
-
+	
+	@Override
+	public void valueChanged(final ListSelectionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void actionPerformed(final ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
