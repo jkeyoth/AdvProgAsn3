@@ -114,8 +114,8 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 	private JList friend1ViewList;
 	private DefaultListModel friend1ViewListModel;
 	
-	private JList friend2ViewList;
-	private DefaultListModel friend2ViewListModel;
+	private JList friendOf1ViewList;
+	private DefaultListModel friendOf1ViewListModel;
 	
 	public MainGui()
 	{
@@ -380,15 +380,12 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		
 		JScrollPane friend1ViewListScroll = new JScrollPane(friend1ViewList);
 		
-		friend2ViewListModel = new DefaultListModel();
-		friend2ViewListModel.addElement("testie's friend");
+		friendOf1ViewListModel = new DefaultListModel();
+		friendOf1ViewListModel.addElement("testie's friend");
 		
-		friend2ViewList = new JList(friend2ViewListModel);
-		friend2ViewList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		friend2ViewList.setSelectedIndex(0);
-		friend2ViewList.addListSelectionListener(this);
+		friendOf1ViewList = new JList(friendOf1ViewListModel);
 		
-		JScrollPane friend2ViewListScroll = new JScrollPane(friend2ViewList);
+		JScrollPane friendOf1ViewListScroll = new JScrollPane(friendOf1ViewList);
 		
 		cons.ipadx = 10;
 		cons.ipady = 10;
@@ -400,7 +397,7 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		cons.gridwidth = 1;
 		cons.gridheight = 1;
 		
-		friendsViewPan.add(new JLabel("Friend 1:"), cons);
+		friendsViewPan.add(new JLabel("Select Person:"), cons);
 		
 		cons.gridx = 1;
 		friendsViewPan.add(new JLabel("Friends"), cons);
@@ -412,7 +409,7 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		
 		cons.gridx = 1;
 		
-		friendsViewPan.add(friend2ViewListScroll, cons);
+		friendsViewPan.add(friendOf1ViewListScroll, cons);
 		
 		friendsPan.add(friendCreatePan, BorderLayout.NORTH);
 		friendsPan.add(friendsViewPan, BorderLayout.CENTER);
