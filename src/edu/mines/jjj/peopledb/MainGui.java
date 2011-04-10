@@ -1,4 +1,3 @@
-
 package edu.mines.jjj.peopledb;
 
 import java.awt.BorderLayout;
@@ -22,7 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -69,7 +67,6 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 	
 	private JLabel perInfoOut;
 	
-	
 	// add group stuff
 	private JPanel groupCreatePan;
 	
@@ -95,20 +92,30 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 	private JTextArea grpDescOut;
 	
 	// add friends stuff
+	private JPanel friendCreatePan;
+	
+	private JPanel friendsPan;
 	
 	private JList friend1;
 	
+	private DefaultListModel friend1ListModel;
+	
 	private JList friend2;
+	
+	private DefaultListModel friend2ListModel;
 	
 	private JButton frdAddBtn;
 	
 	private JButton frdClearBtn;
 	
 	// view friends stuff
-	private JPanel friendsPan;
+	private JPanel friendsViewPan;
 	
-	private JTable friendInfoTbl;
+	private JList friend1ViewList;
+	private DefaultListModel friend1ViewListModel;
 	
+	private JList friend2ViewList;
+	private DefaultListModel friend2ViewListModel;
 	
 	public MainGui()
 	{
@@ -122,7 +129,6 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		
 		personPan = new JPanel(new BorderLayout(5, 5));
 		
-
 		// create person stuff
 		personCreatePan = new JPanel(new GridLayout(0, 2));
 		fnameField = new JTextField(10);
@@ -136,7 +142,6 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		perClearBtn = new JButton("Clear");
 		perClearBtn.addActionListener(this);
 		
-
 		// add stuff
 		personCreatePan.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
@@ -161,14 +166,12 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		personCreatePan.add(perAddBtn);
 		personCreatePan.add(perClearBtn);
 		
-
 		// view person stuff
 		personViewPan = new JPanel(new GridBagLayout());
 		GridBagConstraints cons = new GridBagConstraints();
 		
 		personViewPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 		
-
 		personListModel = new DefaultListModel();
 		personListModel.addElement("testering");
 		
@@ -206,12 +209,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		cons.gridy = 1;
 		personViewPan.add(perInfoOut, cons);
 		
-
 		// personTab
 		personPan.add(personCreatePan, BorderLayout.NORTH);
 		personPan.add(personViewPan, BorderLayout.CENTER);
 		
-
 		// group stuff
 		groupPan = new JPanel(new BorderLayout(5, 5));
 		
@@ -261,7 +262,6 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		
 		groupCreatePan.add(grpClearBtn, cons);
 		
-
 		groupViewPan = new JPanel(new GridBagLayout());
 		groupViewPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 		
@@ -308,11 +308,119 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 		groupPan.add(groupCreatePan, BorderLayout.NORTH);
 		groupPan.add(groupViewPan, BorderLayout.CENTER);
 		
+		friendsPan = new JPanel(new BorderLayout(5, 5));
+		
+		friendCreatePan = new JPanel(new GridBagLayout());
+		
+		friend1ListModel = new DefaultListModel();
+		friend1ListModel.addElement("testarate");
+		
+		friend1 = new JList(friend1ListModel);
+		friend1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friend1.setSelectedIndex(0);
+		friend1.addListSelectionListener(this);
+		
+		JScrollPane friend1ListScroll = new JScrollPane(friend1);
+		
+		friend2ListModel = new DefaultListModel();
+		friend2ListModel.addElement("testarate'sFriend");
+		
+		friend2 = new JList(friend2ListModel);
+		friend2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friend2.setSelectedIndex(0);
+		friend2.addListSelectionListener(this);
+		
+		JScrollPane friend2ListScroll = new JScrollPane(friend2);
+		
+		frdAddBtn = new JButton("Add");
+		frdAddBtn.addActionListener(this);
+		frdClearBtn = new JButton("Close");
+		frdClearBtn.addActionListener(this);
+		
+		cons.ipadx = 10;
+		cons.ipady = 10;
+		cons.weightx = 1;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridwidth = 1;
+		cons.gridheight = 1;
+		
+		friendCreatePan.add(new JLabel("Friend 1:"), cons);
+		
+		cons.gridx = 1;
+		friendCreatePan.add(new JLabel("Friend 2:"), cons);
+		
+		cons.gridx = 0;
+		cons.gridy = 1;
+		cons.gridheight = 2;
+		friendCreatePan.add(friend1ListScroll, cons);
+		
+		cons.gridx = 1;
+		friendCreatePan.add(friend2ListScroll, cons);
+		
+		cons.gridx = 0;
+		cons.gridy = 3;
+		cons.gridheight = 1;
+		friendCreatePan.add(frdAddBtn, cons);
+		
+		cons.gridx = 1;
+		friendCreatePan.add(frdClearBtn, cons);
+		
+		friendsViewPan = new JPanel(new GridBagLayout());
+		
+		friend1ViewListModel = new DefaultListModel();
+		friend1ViewListModel.addElement("testie");
+		
+		friend1ViewList = new JList(friend1ViewListModel);
+		friend1ViewList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friend1ViewList.setSelectedIndex(0);
+		friend1ViewList.addListSelectionListener(this);
+		
+		JScrollPane friend1ViewListScroll = new JScrollPane(friend1ViewList);
+		
+		friend2ViewListModel = new DefaultListModel();
+		friend2ViewListModel.addElement("testie's friend");
+		
+		friend2ViewList = new JList(friend2ViewListModel);
+		friend2ViewList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friend2ViewList.setSelectedIndex(0);
+		friend2ViewList.addListSelectionListener(this);
+		
+		JScrollPane friend2ViewListScroll = new JScrollPane(friend2ViewList);
+		
+		cons.ipadx = 10;
+		cons.ipady = 10;
+		cons.weightx = 1;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridwidth = 1;
+		cons.gridheight = 1;
+		
+		friendsViewPan.add(new JLabel("Friend 1:"), cons);
+		
+		cons.gridx = 1;
+		friendsViewPan.add(new JLabel("Friends"), cons);
+		
+		cons.gridx = 0;
+		cons.gridy = 1;
+		
+		friendsViewPan.add(friend1ViewListScroll, cons);
+		
+		cons.gridx = 1;
+		
+		friendsViewPan.add(friend2ViewListScroll, cons);
+		
+		friendsPan.add(friendCreatePan, BorderLayout.NORTH);
+		friendsPan.add(friendsViewPan, BorderLayout.CENTER);
+		
 		tabPan.addTab("People", personPan);
 		tabPan.addTab("Groups", groupPan);
 		tabPan.addTab("Friends", friendsPan);
 		
-
 		this.setSize(800, 600);
 		this.add(tabPan);
 		
