@@ -15,8 +15,7 @@ public class PersonTest extends TestCase
 	@Before
 	public void setup()
 	{
-		person =
-			new PersonBuilder().firstName("testFirst").lastName("testLast").username(
+		person = new PersonBuilder().firstName("testFirst").lastName("testLast").username(
 				"testUser").gender(Gender.Male).relationship(Relationship.Single).age(21)
 				.build();
 		

@@ -11,6 +11,26 @@ import edu.mines.jjj.peopledb.Person.PersonBuilder;
 public class PeopleDBTest
 {
 	private final PeopleDB db = PeopleDB.getInstance();
+	
+	/*@Test
+	public void testCreateFriendship()
+	{
+		db. deleteAllRows();
+		Person p1 =
+			new PersonBuilder().firstName("john").lastName("doe")
+				.username("jdog").gender(Gender.Male)
+				.relationship(Relationship.Married).age(21).build();
+		
+		Person p2 =
+			new PersonBuilder().firstName("jose").lastName("quervo")
+				.username("qBeer").gender(Gender.Male)
+				.relationship(Relationship.Single).age(25).build();
+		
+		db.addFriendship(p1, p2);
+		
+		//Finish later
+		
+	}*/
 
 	@Test
 	public void testAddPersonToGroup_getGroupsForPerson()
