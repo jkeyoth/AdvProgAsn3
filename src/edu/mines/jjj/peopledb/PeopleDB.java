@@ -30,8 +30,7 @@ public final class PeopleDB
 	public static final String PEOPLE_GENDER_TEXT = "gender";
 	public static final String PEOPLE_RELATIONSHIP_TEXT = "relationship";
 	public static final String PEOPLE_AGE_INT = "age";
-	
-	// These may not be necessary. See FRIENDSHIP_FRIEND_ID_1_FK_INT.
+
 	public static final String FRIENDSHIP_PERSON1_FK_INT = "person1";
 	public static final String FRIENDSHIP_PERSON2_FK_INT = "person2";
 
@@ -40,9 +39,6 @@ public final class PeopleDB
 
 	public static final String GROUP_MEMBER_MEMBER_ID_FK_INT = "member_id";
 	public static final String GROUP_MEMBER_GROUP_ID_FK_INT = "group_id";
-	public static final String FRIENDSHIP_FRIEND_ID_1_FK_INT ="friend1_id";
-	public static final String FRIENDSHIP_FRIEND_ID_2_FK_INT ="friend2_id";
-
 	// TODO: maybe add a date joined?
 
 	// table names
@@ -79,29 +75,12 @@ public final class PeopleDB
 	}
 
 	// Assume that friends table is named friends
-	public void addFriendship(Person friend1, Person friend2)
+	private void addFriendship(Person friend1, Person friend2)
 	{
-		int friend1Id = getIdFromUsername(friend1.getUsername());
-		int friend2Id = getIdFromUsername(friend2.getUsername());
+		int friend1Id, friend2Id;
 
-		String cols =
-			FRIENDSHIP_FRIEND_ID_1_FK_INT + ", " + FRIENDSHIP_FRIEND_ID_2_FK_INT;
-		String vals = "?,?";
-		
-		try {
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO "
-					+ TABLE_FRIENDSHIP + "("
-					+ cols + ") values(" + vals + ");");
-			stmt.setInt(1, friend1Id);
-			stmt.setInt(2, friend2Id);
+		String stmtBegin = "insert into friends(";
 
-			stmt.executeUpdate();
-			stmt.close();
-		} catch (SQLException e) {
-			System.out.println("Failded to create new friendship");
-			e.printStackTrace();
-		}
-		
 	}
 
 	public void addPersonToGroup(Person p, Group g)
@@ -399,17 +378,12 @@ public final class PeopleDB
 				"FOREIGN KEY(" + GROUP_MEMBER_GROUP_ID_FK_INT + ") REFERENCES "
 				+ TABLE_GROUP + "(" + ID_INT + ")" +
 					");";
-		// NEED TO CREATE FRIENDSHIP TABLE HERE!!!
-		// THINGS THAT NEED TO BE ADDED: FRIEND_ID_INT
-		String friendshipState = "create table if not exists " + TABLE_FRIENDSHIP + "(" +
-			FRIENDSHIP_FRIEND_ID_1_FK_INT + " integer, " +
-			FRIENDSHIP_FRIEND_ID_2_FK_INT + " integer );";
+
 		try
 		{
 			connection.createStatement().execute(peopleState);
 			connection.createStatement().execute(groupState);
 			connection.createStatement().execute(groupMemberState);
-			connection.createStatement().execute(friendshipState);
 		}
 		catch (SQLException e)
 		{
