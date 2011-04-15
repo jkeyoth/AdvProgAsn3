@@ -7,6 +7,13 @@ import org.junit.Test;
 
 import edu.mines.jjj.peopledb.Person.PersonBuilder;
 
+/**
+ * Test class for Person
+ * 
+ * @author jkeyoth
+ * 
+ */
+
 public class PersonTest extends TestCase
 {
 	
@@ -15,7 +22,8 @@ public class PersonTest extends TestCase
 	@Before
 	public void setup()
 	{
-		person = new PersonBuilder().firstName("testFirst").lastName("testLast").username(
+		person =
+			new PersonBuilder().firstName("testFirst").lastName("testLast").username(
 				"testUser").gender(Gender.Male).relationship(Relationship.Single).age(21)
 				.build();
 		
@@ -44,7 +52,27 @@ public class PersonTest extends TestCase
 		
 		Person p2 = PeopleDB.getInstance().buildPerson(person.getUsername());
 		
-		assertEquals("Person updated does not match person returned", person, p2);
+		assertNotNull("p2 is null", p2);
+		
+		assertEquals("Person added does not match person returned", person, p2);
+		
+		person =
+			new PersonBuilder().firstName("testFirstNew").lastName("testLast")
+				.username(
+					"testUser").gender(Gender.Male).relationship(Relationship.Single)
+				.age(22)
+				.build();
+		
+		person.update();
+		
+		p2 = PeopleDB.getInstance().buildPerson(person.getUsername());
+		
+		assertNotNull("p2 is null", p2);
+		
+		assertEquals("Person updated first name does not match person returned",
+			p2.getFirstName(),
+			"testFirstNew");
+		assertEquals("Person updated age does not match person returned", p2.getAge(), 22);
 	}
 	
 }
