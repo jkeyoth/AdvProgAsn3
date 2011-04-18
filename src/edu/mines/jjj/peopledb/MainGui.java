@@ -474,16 +474,18 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
   private Person getPersonByUsername(String uname) {
     for (Person p : people) {
-      if (p.getUsername() == uname)
+      if (p.getUsername() == uname) {
         return p;
+      }
     }
     return null;
   }
 
   private Group getGroupByName(String name) {
     for (Group g : groups) {
-      if (g.getName() == name)
+      if (g.getName() == name) {
         return g;
+      }
     }
     return null;
   }
@@ -535,11 +537,14 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
   }
 
   private void addPerson() {
+
     String fname = fnameField.getText();
     String lname = lnameField.getText();
     String uname = unameField.getText();
+
     Gender gender = (Gender) genderComb.getSelectedItem();
     Relationship relation = (Relationship) relationComb.getSelectedItem();
+
     SpinnerNumberModel model = (SpinnerNumberModel) ageSpin.getModel();
     int age = model.getNumber().intValue();
 
@@ -561,8 +566,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     fnameField.setText("");
     lnameField.setText("");
     unameField.setText("");
+
     genderComb.setSelectedIndex(0);
     relationComb.setSelectedIndex(0);
+
     SpinnerNumberModel model = (SpinnerNumberModel) ageSpin.getModel();
     model.setValue(18);
   }
@@ -578,6 +585,7 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     }
     catch (IllegalArgumentException e) {
       System.out.println("caught bad group name or desc");
+
       JOptionPane.showMessageDialog(this, "Bad group name.", "Need a better name",
               JOptionPane.INFORMATION_MESSAGE, null);
     }

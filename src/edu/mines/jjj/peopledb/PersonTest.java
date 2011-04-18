@@ -84,6 +84,7 @@ public class PersonTest extends TestCase {
     catch (IllegalArgumentException e) {
       // all good
     }
+
     try {
       p = new PersonBuilder().firstName("aHor#riblename").build();
       fail("Really? A symbol in the middle of their name?");

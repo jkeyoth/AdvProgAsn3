@@ -4,15 +4,20 @@ public enum Relationship {
   Single, Married, Engaged, InRelationship;
 
   public static Relationship fromString(String r) {
-    if (r.toUpperCase().equals("SINGLE"))
+    if (r.toUpperCase().equals("SINGLE")) {
       return Relationship.Single;
-    else if (r.toUpperCase().equals("MARRIED"))
+    }
+    else if (r.toUpperCase().equals("MARRIED")) {
       return Relationship.Married;
-    else if (r.toUpperCase().equals("ENGAGED"))
+    }
+    else if (r.toUpperCase().equals("ENGAGED")) {
       return Relationship.Engaged;
-    else if (r.toUpperCase().equals("INRELATIONSHIP"))
+    }
+    else if (r.toUpperCase().equals("INRELATIONSHIP")) {
       return Relationship.InRelationship;
-    else
+    }
+    else {
       throw new IllegalArgumentException("Relationship " + r + " not recognized.");
+    }
   }
 }

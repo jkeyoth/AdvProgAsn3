@@ -81,13 +81,13 @@ public final class PeopleDB {
     String vals = "?,?";
 
     try {
-      PreparedStatement stmt = connection.prepareStatement("INSERT INTO " + TABLE_FRIENDSHIP + "("
-              + cols + ") values(" + vals + ");");
-      stmt.setInt(1, friend1Id);
-      stmt.setInt(2, friend2Id);
+      PreparedStatement statement = connection.prepareStatement("INSERT INTO " + TABLE_FRIENDSHIP
+              + "(" + cols + ") values(" + vals + ");");
+      statement.setInt(1, friend1Id);
+      statement.setInt(2, friend2Id);
 
-      stmt.executeUpdate();
-      stmt.close();
+      statement.executeUpdate();
+      statement.close();
     }
     catch (SQLException e) {
       System.out.println("Failded to create new friendship");
@@ -120,14 +120,14 @@ public final class PeopleDB {
       String cols = GROUP_MEMBER_MEMBER_ID_FK_INT + ", " + GROUP_MEMBER_GROUP_ID_FK_INT;
       String vals = "?,?";
 
-      PreparedStatement stmt = connection.prepareStatement("INSERT INTO " + TABLE_GROUP_MEMBER
+      PreparedStatement statement = connection.prepareStatement("INSERT INTO " + TABLE_GROUP_MEMBER
               + "(" + cols + ") values(" + vals + ");");
 
-      stmt.setInt(1, personId);
-      stmt.setInt(2, groupId);
+      statement.setInt(1, personId);
+      statement.setInt(2, groupId);
 
-      stmt.executeUpdate();
-      stmt.close();
+      statement.executeUpdate();
+      statement.close();
 
     }
     catch (SQLException e) {
@@ -298,8 +298,9 @@ public final class PeopleDB {
       return results.getInt("id");
     }
     catch (SQLException e) {
-      if (e.getMessage() == "ResultSet closed")
+      if (e.getMessage() == "ResultSet closed") {
         return -1;
+      }
       System.err.println(e.getMessage());
     }
     return -1;
@@ -314,13 +315,14 @@ public final class PeopleDB {
     String vals = "?,?";
 
     try {
-      PreparedStatement stmt = connection.prepareStatement("INSERT INTO " + TABLE_GROUP + "("
+      PreparedStatement statement = connection.prepareStatement("INSERT INTO " + TABLE_GROUP + "("
               + cols + ") values(" + vals + ");");
-      stmt.setString(1, g.getName());
-      stmt.setString(2, g.getDescription());
 
-      stmt.executeUpdate();
-      stmt.close();
+      statement.setString(1, g.getName());
+      statement.setString(2, g.getDescription());
+
+      statement.executeUpdate();
+      statement.close();
     }
     catch (SQLException e) {
       System.err.println(e.getMessage());
@@ -333,16 +335,17 @@ public final class PeopleDB {
 
       String vals = "?,?,?,?,?,?";
 
-      PreparedStatement stmt;
+      PreparedStatement statement;
 
       if (pId < 0) {
-        stmt = connection.prepareStatement("INSERT INTO " + TABLE_PEOPLE + "("
+        statement = connection.prepareStatement("INSERT INTO " + TABLE_PEOPLE + "("
                 + PEOPLE_FIRSTNAME_TEXT + ", " + PEOPLE_LASTNAME_TEXT + ", " + PEOPLE_USERNAME_TEXT
                 + ", " + PEOPLE_GENDER_TEXT + ", " + PEOPLE_RELATIONSHIP_TEXT + ", "
                 + PEOPLE_AGE_INT + ") values(" + vals + ");");
       }
+
       else {
-        stmt = connection.prepareStatement("UPDATE " + TABLE_PEOPLE + " set "
+        statement = connection.prepareStatement("UPDATE " + TABLE_PEOPLE + " set "
                 + PEOPLE_FIRSTNAME_TEXT + " = ?, " + PEOPLE_LASTNAME_TEXT + " = ?, "
                 + PEOPLE_USERNAME_TEXT + " = ?, " + PEOPLE_GENDER_TEXT + " = ?, "
                 + PEOPLE_RELATIONSHIP_TEXT + " = ?, " + PEOPLE_AGE_INT + " = ?" + " WHERE "
@@ -350,14 +353,14 @@ public final class PeopleDB {
 
       }
 
-      stmt.setString(1, p.getFirstName());
-      stmt.setString(2, p.getLastName());
-      stmt.setString(3, p.getUsername());
-      stmt.setString(4, p.getGender().toString());
-      stmt.setString(5, p.getRelationship().toString());
-      stmt.setInt(6, p.getAge());
-      stmt.executeUpdate();
-      stmt.close();
+      statement.setString(1, p.getFirstName());
+      statement.setString(2, p.getLastName());
+      statement.setString(3, p.getUsername());
+      statement.setString(4, p.getGender().toString());
+      statement.setString(5, p.getRelationship().toString());
+      statement.setInt(6, p.getAge());
+      statement.executeUpdate();
+      statement.close();
 
     }
     catch (SQLException e) {
