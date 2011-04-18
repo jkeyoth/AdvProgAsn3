@@ -183,6 +183,7 @@ public class Person {
     groups = new ArrayList<Group>();
     db = PeopleDB.getInstance();
   }
+
   /**
    * Add a person to this person's friend list.
    * 
@@ -292,6 +293,7 @@ public class Person {
     for (final Group g : groups) {
       retGroups.add(g.copy());
     }
+
     return retGroups;
   }
 
@@ -324,8 +326,14 @@ public class Person {
 
   @Override
   public String toString() {
-    return "User " + username + ": " + firstName + " " + lastName + ", " + age + " year old "
-            + gender + ". Relationship status: " + relationship;
+    StringBuilder sbuilder = new StringBuilder();
+    sbuilder.append("User ").append(username).append(": ").append(firstName).append(" ")
+            .append(lastName).append(", ").append(age).append(" year old ").append(gender)
+            .append(". Relationship status: ").append(relationship);
+
+    String str = sbuilder.toString();
+
+    return str;
   }
 
   /**
@@ -337,15 +345,27 @@ public class Person {
 
   private boolean checkValidName(String name) {
     boolean good = true;
-    good = good && name.length() > 0;
-    good = good && !name.matches(".*[^a-zA-Z].*");
+    good = name.length() > 0;
+    if (good) {
+      good = !name.matches(".*[^a-zA-Z].*");
+    }
+    else {
+      return false;
+    }
+
     return good;
   }
 
   private boolean checkValidUsername(String uname) {
     boolean good = true;
-    good = good && uname.length() > 0;
-    good = good && !uname.matches(".*[^a-zA-Z0-9_].*");
+    good = uname.length() > 0;
+    if (good) {
+      good = !uname.matches(".*[^a-zA-Z0-9_].*");
+    }
+    else {
+      return false;
+    }
+
     return good;
   }
 }
