@@ -17,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -473,18 +474,16 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
   private Person getPersonByUsername(String uname) {
     for (Person p : people) {
-      if (p.getUsername() == uname) {
+      if (p.getUsername() == uname)
         return p;
-      }
     }
     return null;
   }
 
   private Group getGroupByName(String name) {
     for (Group g : groups) {
-      if (g.getName() == name) {
+      if (g.getName() == name)
         return g;
-      }
     }
     return null;
   }
@@ -551,7 +550,8 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     }
     catch (IllegalArgumentException e) {
       System.out.println("caught a bad name or age");
-      // TODO: Add some sort of toast or dialog about a bad name or age here
+      JOptionPane.showMessageDialog(this, e.getMessage(), "Need a better name",
+              JOptionPane.INFORMATION_MESSAGE, null);
     }
 
     loadPersonInfo();
@@ -578,7 +578,8 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     }
     catch (IllegalArgumentException e) {
       System.out.println("caught bad group name or desc");
-      // TODO: do a GUI message that a bad name or desc
+      JOptionPane.showMessageDialog(this, "Bad group name.", "Need a better name",
+              JOptionPane.INFORMATION_MESSAGE, null);
     }
 
     loadGroupInfo();

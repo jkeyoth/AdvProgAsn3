@@ -379,15 +379,17 @@ public final class PeopleDB {
 
     String groupMemberState = "create table if not exists " + TABLE_GROUP_MEMBER + "(" + ID_INT
             + " integer primary key, " + GROUP_MEMBER_MEMBER_ID_FK_INT + " integer, "
-            + GROUP_MEMBER_GROUP_ID_FK_INT + " integer, " + "FOREIGN KEY("
-            + GROUP_MEMBER_MEMBER_ID_FK_INT + ") REFERENCES " + TABLE_PEOPLE + "(" + ID_INT + ")"
-            + "FOREIGN KEY(" + GROUP_MEMBER_GROUP_ID_FK_INT + ") REFERENCES " + TABLE_GROUP + "("
+            + GROUP_MEMBER_GROUP_ID_FK_INT + " integer, " + " FOREIGN KEY("
+            + GROUP_MEMBER_MEMBER_ID_FK_INT + ") REFERENCES " + TABLE_PEOPLE + "(" + ID_INT + "),"
+            + " FOREIGN KEY(" + GROUP_MEMBER_GROUP_ID_FK_INT + ") REFERENCES " + TABLE_GROUP + "("
             + ID_INT + ")" + ");";
     // NEED TO CREATE FRIENDSHIP TABLE HERE!!!
     // THINGS THAT NEED TO BE ADDED: FRIEND_ID_INT
     String friendshipState = "create table if not exists " + TABLE_FRIENDSHIP + "("
             + FRIENDSHIP_FRIEND_ID_1_FK_INT + " integer, " + FRIENDSHIP_FRIEND_ID_2_FK_INT
-            + " integer );";
+            + " integer, FOREIGN KEY(" + FRIENDSHIP_FRIEND_ID_1_FK_INT + ") REFERENCES "
+            + TABLE_PEOPLE + "(" + ID_INT + ")," + " FOREIGN KEY(" + FRIENDSHIP_FRIEND_ID_2_FK_INT
+            + ") REFERENCES " + TABLE_PEOPLE + "(" + ID_INT + ")" + ");";
     try {
       connection.createStatement().execute(peopleState);
       connection.createStatement().execute(groupState);

@@ -6,9 +6,8 @@ public class Group {
 
   public Group(String name, String description) {
     this.name = name;
-    if (!checkValidName(name)) {
+    if (!checkValidName(name))
       throw new IllegalArgumentException("Group name is not valid");
-    }
     this.description = description;
   }
 
@@ -71,11 +70,10 @@ public class Group {
     boolean good = true;
     good = name.length() > 0;
     if (good) {
-      good = !name.matches(".*[^a-zA-Z].*");
+      good = !name.matches(".*[^a-zA-Z0-9].*");
     }
-    else {
+    else
       return false;
-    }
 
     return good;
   }
