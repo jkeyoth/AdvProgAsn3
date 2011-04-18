@@ -64,4 +64,51 @@ public class PersonTest extends TestCase {
     assertEquals("Person updated age does not match person returned", p2.getAge(), 22);
   }
 
+  @Test
+  public void testValidation() {
+    Person p = new PersonBuilder().firstName("aGoodName").lastName("aDecentLast")
+            .username("agoodUser9").age(20).build();
+
+    try {
+      p = new PersonBuilder().firstName("123").build();
+      fail("Person constructor should have thrown an IllegalArgumentException");
+    }
+    catch (IllegalArgumentException e) {
+      // we are good
+    }
+
+    try {
+      p = new PersonBuilder().firstName("aGoodFirst").lastName("but4BadLast").build();
+      fail("You think people can have numbers in their last name?");
+    }
+    catch (IllegalArgumentException e) {
+      // all good
+    }
+    try {
+      p = new PersonBuilder().firstName("aHor#riblename").build();
+      fail("Really? A symbol in the middle of their name?");
+    }
+    catch (IllegalArgumentException e) {
+      // all good
+    }
+
+    try {
+      p = new PersonBuilder().firstName("goodFirst").lastName("goodLast").username("badU$er")
+              .build();
+      fail("Really? A symbol in the middle of their user name?");
+    }
+    catch (IllegalArgumentException e) {
+      // all good
+    }
+
+    try {
+      p = new PersonBuilder().firstName("goodFirst").lastName("goodLast").username("goodUser")
+              .age(-30).build();
+      fail("benjamin button or somethin?");
+    }
+    catch (IllegalArgumentException e) {
+      // all good
+    }
+
+  }
 }

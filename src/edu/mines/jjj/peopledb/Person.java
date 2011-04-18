@@ -24,7 +24,17 @@ public class Person {
     private Relationship relationship;
     private int age;
 
+    /**
+     * Sets default values, so not everything has to be built in testing. Default names and age will
+     * not pass validation in Person constructor
+     */
     public PersonBuilder() {
+      firstName = "";
+      lastName = "";
+      username = "";
+      gender = Gender.Male;
+      relationship = Relationship.Single;
+      age = -1;
     }
 
     /**
@@ -39,6 +49,11 @@ public class Person {
       return this;
     }
 
+    /**
+     * Build the person. Calls Person's constructor.
+     * 
+     * @return The built Person
+     */
     public Person build() {
       return new Person(this);
     }
@@ -146,16 +161,28 @@ public class Person {
 
   private Person(final PersonBuilder builder) {
     this.firstName = builder.getFirstName();
+    if (!checkValidName(firstName))
+      throw new IllegalArgumentException("First name not valid");
+
     this.lastName = builder.getLastName();
+    if (!checkValidName(lastName))
+      throw new IllegalArgumentException("Last name not valid");
+
     this.username = builder.getUsername();
+    if (!checkValidUsername(username))
+      throw new IllegalArgumentException("User name not valid");
+
     this.gender = builder.getGender();
     this.relationship = builder.getRelationship();
+
     this.age = builder.getAge();
+    if (age < 0)
+      throw new IllegalArgumentException("Negative age is not allowed");
+
     friends = new ArrayList<Person>();
     groups = new ArrayList<Group>();
     db = PeopleDB.getInstance();
   }
-
   /**
    * Add a person to this person's friend list.
    * 
@@ -308,4 +335,17 @@ public class Person {
     db.insertPerson(this);
   }
 
+  private boolean checkValidName(String name) {
+    boolean good = true;
+    good = good && name.length() > 0;
+    good = good && !name.matches(".*[^a-zA-Z].*");
+    return good;
+  }
+
+  private boolean checkValidUsername(String uname) {
+    boolean good = true;
+    good = good && uname.length() > 0;
+    good = good && !uname.matches(".*[^a-zA-Z0-9_].*");
+    return good;
+  }
 }

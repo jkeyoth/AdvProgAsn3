@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -28,6 +29,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import edu.mines.jjj.peopledb.Person.PersonBuilder;
 
 public class MainGui extends JFrame implements ListSelectionListener, ActionListener {
 
@@ -118,11 +121,28 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
   private DefaultListModel friendOf1ViewListModel;
   // End Gui Members-------------------------------------------------------
 
+  private PeopleDB db;
+
+  private ArrayList<Person> people;
+
   public MainGui() {
     setupGui();
 
+    db = PeopleDB.getInstance();
+
+    loadPersonInfo();
+
   }
 
+  private void loadPersonInfo() {
+    people = db.buildAllPeople();
+
+    personListModel.clear();
+
+    for (Person p : people) {
+      personListModel.addElement(p.getUsername());
+    }
+  }
   private void setupGui() {
     tabPan = new JTabbedPane();
 
@@ -186,7 +206,6 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     personViewPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 
     personListModel = new DefaultListModel();
-    personListModel.addElement("testering");
 
     personList = new JList(personListModel);
     personList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -439,16 +458,74 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
   }
 
+  private Person getPersonByUsername(String uname) {
+    for (Person p : people) {
+      if (p.getUsername() == uname)
+        return p;
+    }
+    return null;
+  }
+
   @Override
   public void valueChanged(final ListSelectionEvent e) {
-    // TODO Auto-generated method stub
+    Object source = e.getSource();
+
+    if (source.equals(personList)) {
+      Person selected = getPersonByUsername((String) personList.getSelectedValue());
+
+      if (selected != null) {
+
+        perNameOut.setText(selected.getUsername() + ": " + selected.getFirstName() + " "
+                + selected.getLastName());
+        perInfoOut.setText("Age:" + selected.getAge() + " Gender:"
+                + selected.getGender().toString() + " Relationship Status:"
+                + selected.getRelationship().toString());
+      }
+    }
 
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    // TODO Auto-generated method stub
+    Object source = e.getSource();
 
+    if (source.equals(perAddBtn)) {
+      addPerson();
+    }
+    if (source.equals(perClearBtn)) {
+      clearPerson();
+    }
   }
 
+  private void addPerson() {
+    String fname = fnameField.getText();
+    String lname = lnameField.getText();
+    String uname = unameField.getText();
+    Gender gender = (Gender) genderComb.getSelectedItem();
+    Relationship relation = (Relationship) relationComb.getSelectedItem();
+    SpinnerNumberModel model = (SpinnerNumberModel) ageSpin.getModel();
+    int age = model.getNumber().intValue();
+
+    try {
+      Person toAdd = new PersonBuilder().firstName(fname).lastName(lname).username(uname)
+              .gender(gender).relationship(relation).age(age).build();
+      toAdd.update();
+    }
+    catch (IllegalArgumentException e) {
+      System.out.println("caught a bad name or age");
+      // TODO: Add some sort of toast or dialog about a bad name or age here
+    }
+
+    loadPersonInfo();
+  }
+
+  private void clearPerson() {
+    fnameField.setText("");
+    lnameField.setText("");
+    unameField.setText("");
+    genderComb.setSelectedIndex(0);
+    relationComb.setSelectedIndex(0);
+    SpinnerNumberModel model = (SpinnerNumberModel) ageSpin.getModel();
+    model.setValue(18);
+  }
 }
