@@ -1,5 +1,10 @@
 package edu.mines.jjj.peopledb;
 
+/**
+ * Handles creation and maintenance of Group
+ * @author jkeyoth, jdinges
+ *
+ */
 public class Group {
   private final String name;
   private String description;
@@ -11,23 +16,42 @@ public class Group {
     }
     this.description = description;
   }
-
+  
+  /**
+   * Returns Description of group
+   * @return Group
+   */
   public String getDescription() {
     return description;
   }
 
+  /**
+   * User can define description of group
+   * @param description String
+   */
   public void setDescription(String description) {
     this.description = description;
   }
-
+  
+  /**
+   * Returns the name of the Group
+   * @return String
+   */
   public String getName() {
     return name;
   }
-
+  
+  /**
+   * Updates instance
+   */
   public void update() {
     PeopleDB.getInstance().insertGroup(this);
   }
-
+  
+  /**
+   * Copies the Group
+   * @return Group
+   */
   public Group copy() {
     return new Group(name, description);
   }

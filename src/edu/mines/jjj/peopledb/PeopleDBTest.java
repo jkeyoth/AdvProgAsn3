@@ -19,20 +19,81 @@ import edu.mines.jjj.peopledb.Person.PersonBuilder;
 public class PeopleDBTest {
   private final PeopleDB db = PeopleDB.getInstance();
 
-  /*
-   * @Test public void testCreateFriendship() { db. deleteAllRows(); Person p1 = new
-   * PersonBuilder().firstName("john").lastName("doe") .username("jdog").gender(Gender.Male)
-   * .relationship(Relationship.Married).age(21).build();
-   * 
-   * Person p2 = new PersonBuilder().firstName("jose").lastName("quervo")
-   * .username("qBeer").gender(Gender.Male) .relationship(Relationship.Single).age(25).build();
-   * 
-   * db.addFriendship(p1, p2);
-   * 
-   * //Finish later
-   * 
-   * }
-   */
+  
+   @Test 
+   public void testCreateFriendship() { 
+	   db. deleteAllRows(); 
+	   Person p1 = new PersonBuilder().firstName("john").lastName("doe")
+	   .username("jdog").gender(Gender.Male).relationship(Relationship.Married)
+	   .age(21).build();
+   
+	   Person p2 = new PersonBuilder().firstName("jose").lastName("quervo")
+	   .username("qBeer").gender(Gender.Male).relationship(Relationship.Single)
+	   .age(25).build();
+	   db.insertPerson(p1);
+	   db.insertPerson(p2);
+	   db.addFriendship(p1, p2);
+	   ArrayList<Person> p1Friends = p1.getFriends();
+	   ArrayList<Person> p2Friends = p2.getFriends();
+	   assertEquals("Person 1 is not friends with Person 2", p1.getUsername(), 
+			   p2.getPersonByUsername(p1.getUsername()).getUsername());
+	   assertEquals("Person 2 is not friends with Person 1", p2.getUsername(), 
+			   p1.getPersonByUsername(p2.getUsername()).getUsername());
+   }
+   
+   @Test
+   public void testRemoveFrienship() {
+	   db.deleteAllRows();
+	   Person p1 = new PersonBuilder().firstName("john").lastName("doe")
+	   .username("jdog").gender(Gender.Male).relationship(Relationship.Married)
+	   .age(21).build();
+   
+	   Person p2 = new PersonBuilder().firstName("jose").lastName("quervo")
+	   .username("qBeer").gender(Gender.Male).relationship(Relationship.Single)
+	   .age(25).build();
+	   db.insertPerson(p1);
+	   db.insertPerson(p2);
+	   db.addFriendship(p1, p2);
+	   ArrayList<Person> p1Friends = p1.getFriends();
+	   ArrayList<Person> p2Friends = p2.getFriends();
+	   assertEquals("Person 1 is not friends with Person 2", p1.getUsername(), 
+			   p2.getPersonByUsername(p1.getUsername()).getUsername());
+	   assertEquals("Person 2 is not friends with Person 1", p2.getUsername(), 
+			   p1.getPersonByUsername(p2.getUsername()).getUsername());
+	   
+	   db.removeFriendship(p1, p2);
+	   p1.removeFriend(p2);
+	   p2.removeFriend(p1);
+	   
+	   assertEquals("Person 1 did not remove person 2 as friend", false, p1.isFriendsWith(p2));
+	   assertEquals("Person 2 did not remove person 1 as friend", false, p2.isFriendsWith(p1));
+   }
+   
+  @Test
+  public void testBuildAllFriends(){
+	  	db.deleteAllRows(); 
+	   Person p1 = new PersonBuilder().firstName("john").lastName("doe")
+	   .username("jdog").gender(Gender.Male).relationship(Relationship.Married)
+	   .age(21).build();
+  
+	   Person p2 = new PersonBuilder().firstName("jose").lastName("quervo")
+	   .username("qBeer").gender(Gender.Male).relationship(Relationship.Single)
+	   .age(25).build();
+	   db.insertPerson(p1);
+	   db.insertPerson(p2);
+	   db.addFriendship(p1, p2);
+	   ArrayList<Person> p1Friends = p1.getFriends();
+	   ArrayList<Person> p2Friends = p2.getFriends();
+	   assertEquals("Person 1 is not friends with Person 2", p1.getUsername(), 
+			   p2.getPersonByUsername(p1.getUsername()).getUsername());
+	   assertEquals("Person 2 is not friends with Person 1", p2.getUsername(), 
+			   p1.getPersonByUsername(p2.getUsername()).getUsername());
+	   ArrayList<String> f1 = db.buildAllFriends1();
+	   ArrayList<String> f2 = db.buildAllFriends2();
+	   assertEquals("Person 1 was not added correctly", f1.get(0), p1.getUsername());
+	   assertEquals("Person 2 was not added correctly", f2.get(0), p2.getUsername());
+
+  }
 
   @Test
   public void testAddPersonToGroup_getGroupsForPerson() {

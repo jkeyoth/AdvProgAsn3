@@ -218,6 +218,50 @@ public class Person {
       friends.add(newFriend);
     }
   }
+  
+  /**
+   * Removes a friend from friends array list
+   * @param oldFriend Person
+   */
+  public void removeFriend(Person oldFriend){
+	  if(friends.contains(oldFriend)){
+		  friends.remove(oldFriend);
+	  }
+  }
+  
+  /**
+   * Gets friends in the form of array list
+   * @return ArrayList<Person>
+   */
+  public ArrayList<Person> getFriends(){
+	  return friends;
+  }
+  
+  /**
+   * Returns the Person Object given a username
+   * @param uname String
+   * @return Person
+   */
+  public Person getPersonByUsername(String uname) {
+	    for (Person p : friends) {
+	      if (p.getUsername() == uname) {
+	        return p;
+	      }
+	    }
+	    return null;
+  }
+  
+  /**
+   * Checks to see if Person p is in friends array list
+   * @param p Person
+   * @return Boolean
+   */
+  public boolean isFriendsWith(Person p){
+	  if(friends.contains(p))
+		  return true;
+	  else
+		  return false;
+  }
 
   /**
    * Add this person to a group.

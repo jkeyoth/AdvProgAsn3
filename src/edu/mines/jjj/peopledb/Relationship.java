@@ -1,8 +1,18 @@
 package edu.mines.jjj.peopledb;
 
+/**
+ * Enum class for possible relationship settings
+ * @author jkeyoth, jdinges
+ *
+ */
 public enum Relationship {
   Single, Married, Engaged, InRelationship;
-
+  
+  /**
+   * Converts from string to Enum
+   * @param r String
+   * @return Relationship Enum
+   */
   public static Relationship fromString(String r) {
     if (r.toUpperCase().equals("SINGLE")) {
       return Relationship.Single;

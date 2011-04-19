@@ -71,8 +71,14 @@ public final class PeopleDB {
 
     runCreate();
   }
-
-  // Assume that friends table is named friends
+  
+  /**
+   * Creates a friendship in the database
+   * 
+   * @param friend1 The first friend
+   * 
+   * @param friend2 The second friend
+   */
   public void addFriendship(Person friend1, Person friend2) {
     int friend1Id = getIdFromUsername(friend1.getUsername());
     int friend2Id = getIdFromUsername(friend2.getUsername());
@@ -93,7 +99,31 @@ public final class PeopleDB {
       System.out.println("Failded to create new friendship");
       e.printStackTrace();
     }
-
+    friend1.addFriend(friend2);
+    friend2.addFriend(friend1);
+  }
+  
+  /**
+   * Removes a friendship
+   * 
+   * @param p1 Party 1 of the split up friendship
+   * 
+   * @param p2 Party 2 of the split of frienship
+   */
+  public void removeFriendship(Person p1, Person p2){
+	  try{
+		  Integer p1Id = getIdFromUsername(p1.getUsername());
+		  Integer p2Id = getIdFromUsername(p2.getUsername());
+		  
+		  connection.createStatement().execute("DELETE FROM " + TABLE_FRIENDSHIP
+				  + " WHERE (friend1_id = " + p1Id.toString() + " AND friend2_id = " + p2Id.toString()
+				  + " ) or (friend1_id = " + p2Id.toString() + " AND friend2_id = " + p1Id.toString()
+				  + ");");
+	  } catch (SQLException e){
+		  System.err.println(e.getMessage());
+	  }
+	  p1.removeFriend(p2);
+	  p2.removeFriend(p1);
   }
 
   /**
@@ -133,6 +163,54 @@ public final class PeopleDB {
     catch (SQLException e) {
       System.err.println(e.getMessage());
     }
+  }
+  
+  /**
+   * Builds half a list of friends
+   * @return ArrayList<String>
+   */
+  public ArrayList<String> buildAllFriends1(){
+	    ArrayList<String> friendsA = new ArrayList<String>();
+	    
+	    try {
+	        ResultSet results1 = singleton.connection.createStatement().executeQuery("select " 
+	        		+ TABLE_PEOPLE + "." + PEOPLE_USERNAME_TEXT + " as friend_name from " 
+	        		+ TABLE_PEOPLE + ", " + TABLE_FRIENDSHIP + " where " + TABLE_PEOPLE 
+	        		+ "." + ID_INT + " = " + TABLE_FRIENDSHIP + "." 
+	        		+ FRIENDSHIP_FRIEND_ID_1_FK_INT + ";");
+
+	        while (results1.next()) {
+	        	friendsA.add(results1.getString(1));
+	          }
+	    } catch (SQLException e){
+	        System.err.println(e.getMessage());
+
+	    }
+	    
+	    return friendsA;
+
+  }
+  
+  /**
+   * Builds other half of friend list
+   * @return ArrayList<String>
+   */
+  public ArrayList<String> buildAllFriends2(){
+	    ArrayList<String> friendsB = new ArrayList<String>();
+	    try{
+	    	 ResultSet results2 = singleton.connection.createStatement().executeQuery("select " 
+		        		+ TABLE_PEOPLE + "." + PEOPLE_USERNAME_TEXT + " as friend_name from " 
+		        		+ TABLE_PEOPLE + ", " + TABLE_FRIENDSHIP + " where " + TABLE_PEOPLE 
+		        		+ "." + ID_INT + " = " + TABLE_FRIENDSHIP + "." 
+		        		+ FRIENDSHIP_FRIEND_ID_2_FK_INT + ";");
+	    	 while (results2.next()) {
+	    		 friendsB.add(results2.getString(1));
+	    	}
+	    } catch (SQLException e){
+	        System.err.println(e.getMessage());
+
+	    }
+	    return friendsB;
   }
 
   /**
@@ -243,6 +321,8 @@ public final class PeopleDB {
       connection.createStatement().execute("delete from " + TABLE_PEOPLE + ";");
       connection.createStatement().execute("delete from " + TABLE_GROUP + ";");
       connection.createStatement().execute("delete from " + TABLE_GROUP_MEMBER + ";");
+      connection.createStatement().execute("delete from " + TABLE_FRIENDSHIP + ";");
+
     }
     catch (SQLException e) {
       System.err.println(e.getMessage());
@@ -289,7 +369,13 @@ public final class PeopleDB {
     return groupsForPerson;
   }
 
-  // Get the ido f a person from the persons username. private, helper method.
+  /**
+   * Returns the id of a specific username stored in the db
+   * 
+   * @param uname
+   * 
+   * @return integer
+   */
   private int getIdFromUsername(String uname) {
     try {
       ResultSet results = singleton.connection.createStatement().executeQuery(
@@ -307,8 +393,9 @@ public final class PeopleDB {
   }
 
   /**
+   * Inserts a group in the database
    * 
-   * @param g
+   * @param g Group
    */
   public void insertGroup(Group g) {
     String cols = GROUP_NAME_TEXT + ", " + GROUP_DESCRIPTION_TEXT;
@@ -328,7 +415,14 @@ public final class PeopleDB {
       System.err.println(e.getMessage());
     }
   }
-
+  
+  /**
+   * Inserts a person into the database
+   * 
+   * @param p Person
+   * 
+   * @return boolean
+   */
   public boolean insertPerson(Person p) {
     try {
       int pId = getIdFromUsername(p.getUsername());
@@ -369,7 +463,9 @@ public final class PeopleDB {
     }
     return true;
   }
-
+  /**
+   * Initialize database including schema
+   */
   private void runCreate() {
     String peopleState = "create table if not exists " + TABLE_PEOPLE + "(" + ID_INT
             + " integer primary key, " + PEOPLE_FIRSTNAME_TEXT + " text, " + PEOPLE_LASTNAME_TEXT
@@ -404,7 +500,12 @@ public final class PeopleDB {
     }
 
   }
-
+  
+  /**
+   * Gets the instance of the PeopleDB as it is a singleton
+   * 
+   * @return PeopleDB
+   */
   public static PeopleDB getInstance() {
     if (singleton == null) {
       singleton = new PeopleDB();

@@ -1,5 +1,8 @@
 package edu.mines.jjj.peopledb;
 
+/**
+ * This class builds the GUI
+ */
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -134,9 +137,35 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
     loadPersonInfo();
     loadGroupInfo();
+    loadFriendInfo();
 
   }
+  
+  /**
+   * Makes updates everyone in the database with their list of friends
+   */
+  private void loadFriendInfo() {
+	  ArrayList<String> friends1 = db.buildAllFriends1();
+	  ArrayList<String> friends2 = db.buildAllFriends2();
 
+	  for(int i = 0; i<friends1.size(); i++){
+		  String f1 = friends1.get(i);
+		  String f2 = friends2.get(i);
+		  Person p1 = getPersonByUsername(f1);
+		  people.remove(p1);
+		  Person p2 = getPersonByUsername(f2);
+		  people.remove(p2);
+		  p1.addFriend(p2);
+		  p2.addFriend(p1);
+		  people.add(p1);
+		  people.add(p2);
+	  }
+	  
+  }
+
+  /**
+   * Loads all of the people into people ArrayList
+   */
   private void loadPersonInfo() {
     people = db.buildAllPeople();
 
@@ -146,7 +175,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
       personListModel.addElement(p.getUsername());
     }
   }
-
+  
+  /**
+   * Loads groups
+   */
   private void loadGroupInfo() {
     groups = db.buildAllGroups();
 
@@ -157,6 +189,9 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     }
   }
 
+  /**
+   * Initializes the GUI
+   */
   private void setupGui() {
     tabPan = new JTabbedPane();
 
@@ -172,7 +207,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     this.add(tabPan);
 
   }
-
+  
+  /**
+   * Initializes Person Tab of GUI
+   */
   private void setupPersonGui() {
     personPan = new JPanel(new BorderLayout(5, 5));
 
@@ -260,6 +298,9 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     personPan.add(personViewPan, BorderLayout.CENTER);
   }
 
+  /**
+   * Initializes Group Tab of GUI
+   */
   public void setupGroupGui() {
     // group stuff
     groupPan = new JPanel(new BorderLayout(5, 5));
@@ -356,14 +397,17 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     groupPan.add(groupCreatePan, BorderLayout.NORTH);
     groupPan.add(groupViewPan, BorderLayout.CENTER);
   }
-
+  
+  /**
+   * Initializes Friend Tab of GUI
+   */
   public void setupFriendGui() {
+	//Create layoout
     friendsPan = new JPanel(new BorderLayout(5, 5));
-
     friendCreatePan = new JPanel(new GridBagLayout());
-
+    
     friend1ListModel = new DefaultListModel();
-    friend1ListModel.addElement("testarate");
+    friend1ListModel = personListModel;
 
     friend1 = new JList(friend1ListModel);
     friend1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -373,8 +417,8 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     final JScrollPane friend1ListScroll = new JScrollPane(friend1);
 
     friend2ListModel = new DefaultListModel();
-    friend2ListModel.addElement("testarate'sFriend");
-
+    //friend2ListModel.addElement("testarate'sFriend");
+    friend2ListModel = personListModel;
     friend2 = new JList(friend2ListModel);
     friend2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     friend2.setSelectedIndex(0);
@@ -397,10 +441,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     cons.gridwidth = 1;
     cons.gridheight = 1;
 
-    friendCreatePan.add(new JLabel("Friend 1:"), cons);
+    friendCreatePan.add(new JLabel("Person 1:"), cons);
 
     cons.gridx = 1;
-    friendCreatePan.add(new JLabel("Friend 2:"), cons);
+    friendCreatePan.add(new JLabel("Person 2:"), cons);
 
     cons.gridx = 0;
     cons.gridy = 1;
@@ -430,13 +474,13 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
     final JScrollPane friend1ViewListScroll = new JScrollPane(friend1ViewList);
 
-    friendOf1ViewListModel = new DefaultListModel();
+    /*friendOf1ViewListModel = new DefaultListModel();
     friendOf1ViewListModel.addElement("testie's friend");
 
     friendOf1ViewList = new JList(friendOf1ViewListModel);
 
     final JScrollPane friendOf1ViewListScroll = new JScrollPane(friendOf1ViewList);
-
+	*/
     cons.ipadx = 10;
     cons.ipady = 10;
     cons.weightx = 1;
@@ -447,10 +491,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     cons.gridwidth = 1;
     cons.gridheight = 1;
 
-    friendsViewPan.add(new JLabel("Select Person:"), cons);
+    //friendsViewPan.add(new JLabel("Select Person:"), cons);
 
-    cons.gridx = 1;
-    friendsViewPan.add(new JLabel("Friends"), cons);
+    //cons.gridx = 1;
+    friendsViewPan.add(new JLabel("Friends of Friend 1:"), cons);
 
     cons.gridx = 0;
     cons.gridy = 1;
@@ -459,28 +503,42 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
     cons.gridx = 1;
 
-    friendsViewPan.add(friendOf1ViewListScroll, cons);
+    //friendsViewPan.add(friendOf1ViewListScroll, cons);
 
     friendsPan.add(friendCreatePan, BorderLayout.NORTH);
     friendsPan.add(friendsViewPan, BorderLayout.CENTER);
   }
-
+  
+  /**
+   * Main
+   * @param args
+   */
   public static void main(final String[] args) {
     final MainGui gui = new MainGui();
     gui.setVisible(true);
     gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
   }
-
+  
+  /**
+   * Returns a person given a username
+   * @param uname
+   * @return Person
+   */
   private Person getPersonByUsername(String uname) {
     for (Person p : people) {
-      if (p.getUsername() == uname) {
+      if (p.getUsername().equals(uname)) {
         return p;
       }
     }
     return null;
   }
 
+  /**
+   * Returns the group given the name
+   * @param name
+   * @return Group
+   */
   private Group getGroupByName(String name) {
     for (Group g : groups) {
       if (g.getName() == name) {
@@ -489,7 +547,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     }
     return null;
   }
-
+  
+  /**
+   * Handles user clicking the ListBoxes. Does different things depending on the tab
+   */
   @Override
   public void valueChanged(final ListSelectionEvent e) {
     Object source = e.getSource();
@@ -515,9 +576,31 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
         grpDescOut.setText(selected.getDescription());
       }
     }
+    if (source.equals(friend1)){
+    	Person selected = getPersonByUsername((String) friend1.getSelectedValue());
+    	
+    	if (selected != null) {
+    		//DO SOMETHING HERE!!
+    		//Get selected's friends
+    		ArrayList<Person> pfriends = selected.getFriends();
+    		
+    		//friend1ViewListModel = new DefaultListModel();
+    		
+    	    friend1ViewListModel.clear();
 
+    	    for (Person p : pfriends) {
+    	    	friend1ViewListModel.addElement(p.getUsername());
+    	    }
+    	    
+    	    friend1ViewList = new JList(friend1ViewListModel);
+    	}
+    }
+    
   }
-
+  
+  /**
+   * Handles button clicking.
+   */
   @Override
   public void actionPerformed(final ActionEvent e) {
     Object source = e.getSource();
@@ -534,8 +617,60 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     if (source.equals(grpClearBtn)) {
       clearGroup();
     }
-  }
+    if (source.equals(frdAddBtn)) {
+    	// add friendship
+    	//System.out.println("New Friendship! Handle later");
+    	if(!friend1.isSelectionEmpty() && !friend2.isSelectionEmpty()){
+    		String f1Username = (String) friend1.getSelectedValue();
+    		String f2Username = (String) friend2.getSelectedValue();
+    		Person f1 = getPersonByUsername(f1Username);
+    		Person f2 = getPersonByUsername(f2Username);
+    		
+    		if(!f1.equals(null) && !f2.equals(null)){
+    			if(!f1.isFriendsWith(f2) && !f2.isFriendsWith(f1)){
+    				db.addFriendship(f1,f2);
+    			}
+    		}
+    		ArrayList<Person> f1Friends = f1.getFriends();
+    		friend1ViewListModel.clear();
 
+    	    for (Person p : f1Friends) {
+    	    	friend1ViewListModel.addElement(p.getUsername());
+    	    }
+    	    
+    	    friend1ViewList = new JList(friend1ViewListModel);
+    	}
+    }
+    if (source.equals(frdClearBtn)){
+    	// remove a friendship
+    	System.out.println("Remove a frienship! Handle later");
+    	if(!friend1.isSelectionEmpty() && !friend2.isSelectionEmpty()){
+    		String f1Username = (String) friend1.getSelectedValue();
+    		String f2Username = (String) friend2.getSelectedValue();
+    		Person f1 = getPersonByUsername(f1Username);
+    		Person f2 = getPersonByUsername(f2Username);
+    		
+    		if(!f1.equals(null) && !f2.equals(null)){
+    			if(f1.isFriendsWith(f2) && f2.isFriendsWith(f1)){
+    				db.removeFriendship(f1,f2);
+    			}
+    		}
+    		ArrayList<Person> f1Friends = f1.getFriends();
+    		friend1ViewListModel.clear();
+
+    	    for (Person p : f1Friends) {
+    	    	friend1ViewListModel.addElement(p.getUsername());
+    	    }
+    	    
+    	    friend1ViewList = new JList(friend1ViewListModel);
+    	}
+    	
+    }
+  }
+  
+  /**
+   * Adds a person to the db and people ArrayList
+   */
   private void addPerson() {
 
     String fname = fnameField.getText();
@@ -561,7 +696,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
 
     loadPersonInfo();
   }
-
+  
+  /**
+   * Removes a person from the DB and People array list
+   */
   private void clearPerson() {
     fnameField.setText("");
     lnameField.setText("");
@@ -573,7 +711,10 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     SpinnerNumberModel model = (SpinnerNumberModel) ageSpin.getModel();
     model.setValue(18);
   }
-
+  
+  /**
+   * Adds a group
+   */
   private void addGroup() {
     String gname = grpNameField.getText();
     String gdesc = grpDescArea.getText();
@@ -593,6 +734,9 @@ public class MainGui extends JFrame implements ListSelectionListener, ActionList
     loadGroupInfo();
   }
 
+  /**
+   * Clears a group
+   */
   private void clearGroup() {
     grpNameField.setText("");
     grpDescArea.setText("");

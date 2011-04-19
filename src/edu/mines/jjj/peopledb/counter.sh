@@ -1,1 +1,1 @@
-cat `ls | grep -v Test` |grep -v // | wc
+cat `ls | grep -v Test` |grep -v // | wc -l
